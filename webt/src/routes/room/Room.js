@@ -4,18 +4,46 @@ import Peer from 'simple-peer';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 20px;
-  display: flex;
+  /* display: grid; */
+  width: 100vw;
   height: 100vh;
-  width: 90%;
-  margin: auto;
-  flex-wrap: wrap;
 `;
 
-const StyledVideo = styled.video`
-  /* display: ${props => (!props?.isExceeded ? 'flex' : 'none')}; */
-  height: 40%;
-  width: 50%;
+const BackgrounVideoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 1px solid blue;
+`;
+
+const MyVideo = styled.video`
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+`;
+
+const VideoListWrapper = styled.div`
+  position: absolute;
+  bottom: 30px;
+  right: 0;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100px;
+  z-index: 10;
+  overflow-x: auto;
+`;
+const OotherVideo = styled.video`
+  border: 2px solid black;
+  object-fit: cover;
+  height: 100%;
+  width: 70px;
+  margin: 0 5px;
+  &:hover {
+    border: 2px solid blue;
+  }
 `;
 
 const CurrentTest = styled.div`
@@ -38,10 +66,9 @@ const Video = props => {
     props.peer.on('stream', stream => {
       ref.current.srcObject = stream;
     });
-    // eslint-disable-next-line
   }, []);
 
-  return <StyledVideo playsInline autoPlay ref={ref} />;
+  return <OotherVideo playsInline autoPlay ref={ref} />;
 };
 
 const videoConstraints = {
@@ -64,7 +91,7 @@ const Room = props => {
     let cleanUp = false;
     if (!cleanUp) {
       try {
-        socketRef.current = io('http://localhost:8000/');
+        socketRef.current = io.connect('http://localhost:8000');
 
         socketRef.current.on('is reject', () => {
           setLoading(false);
@@ -118,7 +145,6 @@ const Room = props => {
     return () => {
       cleanUp = true;
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -147,7 +173,6 @@ const Room = props => {
     return () => {
       cleanUp = false;
     };
-    // eslint-disable-next-line
   }, [
     socketRef,
     peers,
@@ -168,7 +193,6 @@ const Room = props => {
       peers.splice(findPeersRefIndex, 1);
       setIsDelete(false);
     }
-    // eslint-disable-next-line
   }, [
     peers,
     peersRef.current,
@@ -225,19 +249,22 @@ const Room = props => {
       {loading ? (
         '로딩중'
       ) : (
-        <>
-          <StyledVideo muted ref={userVideo} autoPlay playsInline />
-          {peers.map((peer, index) => {
-            return <Video key={index} peer={peer} />;
-          })}
-          {peersRef.current.map((ele, index) => {
+        <BackgrounVideoWrapper>
+          <MyVideo muted ref={userVideo} autoPlay playsInline />
+
+          <VideoListWrapper>
+            {peers.map((peer, index) => {
+              return <Video key={index} peer={peer} />;
+            })}
+          </VideoListWrapper>
+          {/* {peersRef.current.map((ele, index) => {
             return (
               <CurrentTest
                 key={index}
               >{`haha: ${index} and ${ele.peerID}`}</CurrentTest>
             );
-          })}
-        </>
+          })} */}
+        </BackgrounVideoWrapper>
       )}
       {isExceeded ? (
         <ExceededMessage>인원이 초과하였습니다</ExceededMessage>
