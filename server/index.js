@@ -56,18 +56,33 @@ io.on('connection', socket => {
     // 자기자신의 정보를 제외하고 방안에 존재하는 모든 유저의 방정보를 최신화
     const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
+    // 최신화된 방정보를 client로 전달
     socket.emit('all users', usersInThisRoom);
   });
+  //   여기까지 해석
 
   socket.on('sending signal', payload => {
-    // caller의
+    //접속한 유저를 제외한 나머지 유저의 정보를 중 signal을 기준으로 user joined 트리거를 건든다
+    // 즉 두번째 접속한 유저부터 발동됨
+    // 다른 유저중 한명의 아이디, 방주인의 아이디, 다른유저중 한명의 시그널을 전달 받음
+    // 다른 유저중 한명의 아이디로 emit 함
+    // emit을 특정 유저만 타게팅해서 해당 유저만 작동하게 함
+    // (귓속말로 시그널 연결을 요청함)
+    // 전달 받은 유저는 시그널 접속자의 시그널정보와 방주인의 아이디를 전달받음
     io.to(payload.userToSignal).emit('user joined', {
+      // 새로 접속한 사람 자신의 시그널 정보와 방주인의 아이디를함께 보냄
       signal: payload.signal,
       callerID: payload.callerID,
     });
   });
 
+  // 귓속말로 전달 받은 사람의 signal정보와 방주인의 아이디를 기준으로
+  //   방주인에게 귓속말을 함
+  // 방주인에게 귓속말 전달 받은 사람의 시그널과 , socket.id를 전달 한다
   socket.on('returning signal', payload => {
+    //   귓속말 받은 사람의 시그널 정보와 socketid를 전달하여
+    // 방장이 모든 peer의 정보를 최신화 할수있게 해줌
+    // 즉 귓속말 받고 시그널 요청을 수락한 peer 상태를 방장에게 보내서 방장이 다시 최신화 할수있게끔함
     io.to(payload.callerID).emit('receiving returned signal', {
       signal: payload.signal,
       id: socket.id,

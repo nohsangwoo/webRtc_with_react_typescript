@@ -20,7 +20,7 @@ function OtherVideo(props: Props) {
   const ref: any | null = useRef();
 
   useEffect(() => {
-    props.peer.on('stream', (stream: any) => {
+    props?.peer.on('stream', (stream: any) => {
       ref.current.srcObject = stream;
     });
 
