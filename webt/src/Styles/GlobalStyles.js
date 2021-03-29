@@ -4,7 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 export default createGlobalStyle`
     ${reset};    
     * {
-        box-sizing:border-box;
+        /* box-sizing:border-box; */
         /* -ms-user-select: none;
         -moz-user-select: -moz-none;
         -khtml-user-select: none;
@@ -16,9 +16,8 @@ export default createGlobalStyle`
         color:black;
         font-size:14px;
         font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;        
-        height:200vh;
+        height:100vh;
         overflow:auto;
-        border:1px solid red;
     }
     a {
         color:${props => props.theme.blueColor};

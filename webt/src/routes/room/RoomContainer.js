@@ -6,7 +6,7 @@ import OtherVideo from './components/OtherVideo';
 import LoadingAni from '../../components/LoadingAni';
 
 const Container = styled.div`
-  /* display: grid; */
+  display: grid;
   width: 100vw;
   height: 100vh;
 `;
@@ -14,8 +14,10 @@ const Container = styled.div`
 const BackgrounVideoWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid blue;
 `;
+
+const TopWrapper = styled.div`
+1px solid red;`;
 
 const MyVideo = styled.video`
   position: absolute;
@@ -37,34 +39,19 @@ const VideoListWrapper = styled.div`
   z-index: 10;
   overflow-x: auto;
 `;
-// const OotherVideo = styled.video`
-//   border: 2px solid black;
-//   object-fit: cover;
-//   height: 100%;
-//   width: 70px;
-//   margin: 0 5px;
-//   &:hover {
-//     border: 2px solid blue;
-//   }
-// `;
-
-const CurrentTest = styled.div`
-  width: 100px;
-  height: 100px;
-  border: 1px solid red;
-`;
-
-const ExceededMessage = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100px;
-  border: 1px solid red;
-`;
 
 const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
 };
+
+const Bar2 = styled.div`
+  width: 35px;
+  height: 5px;
+  background-color: #333;
+  margin: 6px 0;
+  transition: 0.4s;
+`;
 
 const RoomContainer = props => {
   const [peers, setPeers] = useState([]);
@@ -72,7 +59,6 @@ const RoomContainer = props => {
   const userVideo = useRef();
   const peersRef = useRef([]);
   const roomID = props.match.params.roomID;
-  const [isExceeded, setIsExceeded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [, forceRerender] = useState();
   const [isDelete, setIsDelete] = useState(false);
@@ -82,12 +68,6 @@ const RoomContainer = props => {
     if (!cleanUp) {
       try {
         socketRef.current = io.connect('http://localhost:8000');
-
-        socketRef.current.on('is reject', () => {
-          setLoading(false);
-          setIsExceeded(true);
-          console.error('2명이상 입장불가!');
-        });
 
         (async function getStream() {
           const stream = await navigator.mediaDevices.getUserMedia({
@@ -135,6 +115,7 @@ const RoomContainer = props => {
     return () => {
       cleanUp = true;
     };
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -233,11 +214,11 @@ const RoomContainer = props => {
     return peer;
   }
 
-  console.log('peers 현황', peers);
   // 나를 제외한 상대방이 peer정보들이 담김
-  // 현재 나간 상대의 peer가 사라지지 않는 에러가 있음
+  console.log('peers 현황', peers);
   return (
     <Container>
+      <TopWrapper>asdasd</TopWrapper>
       {loading ? (
         <LoadingAni />
       ) : (
@@ -258,11 +239,6 @@ const RoomContainer = props => {
             );
           })} */}
         </BackgrounVideoWrapper>
-      )}
-      {isExceeded ? (
-        <ExceededMessage>인원이 초과하였습니다</ExceededMessage>
-      ) : (
-        ''
       )}
     </Container>
   );
