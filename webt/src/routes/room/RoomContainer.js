@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 import styled from 'styled-components';
+import OtherVideo from './components/OtherVideo';
+import LoadingAni from '../../components/LoadingAni';
 
 const Container = styled.div`
   /* display: grid; */
@@ -35,16 +37,16 @@ const VideoListWrapper = styled.div`
   z-index: 10;
   overflow-x: auto;
 `;
-const OotherVideo = styled.video`
-  border: 2px solid black;
-  object-fit: cover;
-  height: 100%;
-  width: 70px;
-  margin: 0 5px;
-  &:hover {
-    border: 2px solid blue;
-  }
-`;
+// const OotherVideo = styled.video`
+//   border: 2px solid black;
+//   object-fit: cover;
+//   height: 100%;
+//   width: 70px;
+//   margin: 0 5px;
+//   &:hover {
+//     border: 2px solid blue;
+//   }
+// `;
 
 const CurrentTest = styled.div`
   width: 100px;
@@ -59,24 +61,12 @@ const ExceededMessage = styled.div`
   border: 1px solid red;
 `;
 
-const Video = props => {
-  const ref = useRef();
-
-  useEffect(() => {
-    props.peer.on('stream', stream => {
-      ref.current.srcObject = stream;
-    });
-  }, []);
-
-  return <OotherVideo playsInline autoPlay ref={ref} />;
-};
-
 const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
 };
 
-const Room = props => {
+const RoomContainer = props => {
   const [peers, setPeers] = useState([]);
   const socketRef = useRef();
   const userVideo = useRef();
@@ -173,6 +163,7 @@ const Room = props => {
     return () => {
       cleanUp = false;
     };
+    // eslint-disable-next-line
   }, [
     socketRef,
     peers,
@@ -193,6 +184,7 @@ const Room = props => {
       peers.splice(findPeersRefIndex, 1);
       setIsDelete(false);
     }
+    // eslint-disable-next-line
   }, [
     peers,
     peersRef.current,
@@ -247,14 +239,15 @@ const Room = props => {
   return (
     <Container>
       {loading ? (
-        '로딩중'
+        <LoadingAni />
       ) : (
         <BackgrounVideoWrapper>
           <MyVideo muted ref={userVideo} autoPlay playsInline />
 
+          {/* peer를 map돌려서 전달한다음 peer.on("steam",....)진행해줌 */}
           <VideoListWrapper>
             {peers.map((peer, index) => {
-              return <Video key={index} peer={peer} />;
+              return <OtherVideo key={index} peer={peer} />;
             })}
           </VideoListWrapper>
           {/* {peersRef.current.map((ele, index) => {
@@ -275,4 +268,4 @@ const Room = props => {
   );
 };
 
-export default Room;
+export default RoomContainer;
