@@ -4,9 +4,9 @@ import Peer from 'simple-peer';
 import styled from 'styled-components';
 import OtherVideo from './components/OtherVideo';
 import LoadingAni from '../../components/LoadingAni';
+import Navbar from '../../components/nav/Navbar';
 
 const Container = styled.div`
-  display: grid;
   width: 100vw;
   height: 100vh;
 `;
@@ -53,8 +53,8 @@ const VideoListWrapper = styled.div`
 `;
 
 const videoConstraints = {
-  height: window.innerHeight / 2,
-  width: window.innerWidth / 2,
+  height: window.innerHeight / 1,
+  width: window.innerWidth / 1,
 };
 
 const Bar2 = styled.div`
@@ -216,7 +216,7 @@ const RoomContainer = props => {
   function createPeer(userToSignal, callerID, stream) {
     // 전달받은 정보로 peer객체 생성
     const peer = new Peer({
-      //
+      // peer연결을 요청하는 쪽이 initiator:true
       initiator: true,
       trickle: false,
       stream,
@@ -278,7 +278,7 @@ const RoomContainer = props => {
   console.log('peers 현황', peers);
   return (
     <Container>
-      <TopWrapper>asdasd</TopWrapper>
+      <Navbar />
       {loading ? (
         <LoadingAni />
       ) : (

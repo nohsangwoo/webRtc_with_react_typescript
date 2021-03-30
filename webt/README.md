@@ -15,3 +15,5 @@ user leaving controll https://www.youtube.com/watch?v=7a_vgmEZrhE
 # npm i uuid
 
 # npm i react-router-dom
+
+# apply nav & hambergur menu icon
