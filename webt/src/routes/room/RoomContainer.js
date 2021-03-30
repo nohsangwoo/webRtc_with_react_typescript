@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 import styled from 'styled-components';
 import OtherVideo from './components/OtherVideo';
 import LoadingAni from '../../components/LoadingAni';
 import Navbar from '../../components/nav/Navbar';
+import ChangeVideo from './components/ChangeVideo';
+import MyListMainVideo from './components/MyListMainVideo';
 
 const Container = styled.div`
   width: 100%;
@@ -17,18 +19,12 @@ const BackgrounVideoWrapper = styled.div`
 `;
 
 //91 67
-const TopWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
+const OtherVideoWrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
   border: 1px solid red;
-  z-index: 10;
-  width: 100%;
-  height: 67px;
-  /* display: flex; */
-  background-color: #f0f0f0;
-  display: grid;
-  /* grid-template-columns: 1fr; */
+  color: red;
+  cursor: pointer;
 `;
 
 const MyVideo = styled.video`
@@ -49,21 +45,12 @@ const VideoListWrapper = styled.div`
   width: 100%;
   height: 100px;
   z-index: 10;
-  overflow-x: auto;
 `;
 
 const videoConstraints = {
   height: window.innerHeight / 1,
   width: window.innerWidth / 1,
 };
-
-const Bar2 = styled.div`
-  width: 35px;
-  height: 5px;
-  background-color: #333;
-  margin: 6px 0;
-  transition: 0.4s;
-`;
 
 const RoomContainer = props => {
   const [peers, setPeers] = useState([]);
@@ -75,6 +62,10 @@ const RoomContainer = props => {
   const [, forceRerender] = useState();
   const [isDelete, setIsDelete] = useState(false);
   const [leftUserId, setLeftUserId] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
+  const TestVideoRef = useRef(null);
+  const [mainStream, setMainStream] = useState(null);
+
   useEffect(() => {
     let cleanUp = false;
     if (!cleanUp) {
@@ -88,6 +79,7 @@ const RoomContainer = props => {
             video: videoConstraints,
             audio: true,
           });
+          setMainStream(stream);
           // 1. props로 전달받은 roomId를 "join room"이란 트리거를 이용하여 BE로 전달
           // 2. caller, answer 공통적으로 작동하는 부분
           socketRef.current.emit('join room', roomID);
@@ -276,6 +268,21 @@ const RoomContainer = props => {
 
   // 나를 제외한 방에 입장한 모든 유저의 peer정보들이 담김
   console.log('peers 현황', peers);
+
+  console.log('선택한 사람', selectedUser);
+
+  const selectUser = useCallback(
+    (peer, index) => {
+      setSelectedUser(index);
+      // userVideo.current.srcObject = stream;
+    },
+    [selectedUser]
+  );
+  const myVideoPlay = () => {
+    console.log('is exist muyStream?L:', mainStream);
+    userVideo.current.srcObject = mainStream;
+    setSelectedUser(null);
+  };
   return (
     <Container>
       <Navbar />
@@ -287,17 +294,26 @@ const RoomContainer = props => {
 
           {/* peer를 map돌려서 전달한다음 peer.on("steam",....)진행해줌 */}
           <VideoListWrapper>
+            <OtherVideoWrapper onClick={() => myVideoPlay()}>
+              <MyListMainVideo mainStream={mainStream} />
+            </OtherVideoWrapper>
             {peers.map((peer, index) => {
-              return <OtherVideo key={index} peer={peer} />;
+              return (
+                <OtherVideoWrapper
+                  key={index}
+                  onClick={() => selectUser(peer, index)}
+                >
+                  <OtherVideo
+                    key={index}
+                    peer={peer}
+                    isSelect={index === selectedUser}
+                    userVideo={userVideo}
+                  />
+                  <div>{`${peersRef.current[index].peerID}`}</div>
+                </OtherVideoWrapper>
+              );
             })}
           </VideoListWrapper>
-          {/* {peersRef.current.map((ele, index) => {
-            return (
-              <CurrentTest
-                key={index}
-              >{`haha: ${index} and ${ele.peerID}`}</CurrentTest>
-            );
-          })} */}
         </BackgrounVideoWrapper>
       )}
     </Container>
