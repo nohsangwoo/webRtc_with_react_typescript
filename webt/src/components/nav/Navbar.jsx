@@ -1,45 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
-import Burger from './Burger';
-import RightNav from './RightNav';
+import FirstArea from './FirstArea';
+import SecondArea from './SecondArea';
+import ThirdArea from './ThirdArea';
 //91 67
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: 1px solid red;
-  z-index: 10;
-  width: 100%;
-  height: 67px;
-  /* display: flex; */
-  background-color: #f0f0f0;
-  display: grid;
-  /* grid-template-columns: 1fr; */
-`;
 
 const Nav = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   z-index: 10;
   width: 100%;
   height: 55px;
   border-bottom: 2px solid #f1f1f1;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
+  padding-left: 20px;
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  border: 2px solid red;
 
   .logo {
     padding: 15px 0;
   }
+  /* div {
+    &:nth-child(1) {
+    }
+  } */
 `;
 
 function Navbar() {
   return (
     <Nav>
-      <div className="logo">NavBar</div>
-      <Burger />
-      <RightNav />
+      <FirstArea />
+      <SecondArea />
+      <ThirdArea />
     </Nav>
   );
 }
