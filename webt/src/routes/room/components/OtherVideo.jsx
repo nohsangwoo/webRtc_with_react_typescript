@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 const Container = styled.video`
   object-fit: cover;
   height: 100%;
-  width: 70px;
+  width: 5rem;
   margin: 0 5px;
 
   ${({ isSelect }) =>
@@ -13,7 +13,7 @@ const Container = styled.video`
           border: 2px solid blue;
         `
       : css`
-          border: 2px solid yellow;
+          border: none;
         `}
 `;
 
@@ -27,17 +27,15 @@ function OtherVideo(props) {
       setOtherStream(stream);
     });
 
-    console.log('othervideo activate: ', props.isSelect);
-
     // eslint-disable-next-line
   }, [props.isSelect]);
 
   useEffect(() => {
     if (props.isSelect) {
+      // 해당 이미지 클릭한경우 메인 비디오 영상을 해당유저의 영상으로 교체!
       props.userVideo.current.srcObject = otherStream;
     }
   }, [props.userVideo, props.isSelect, otherStream]);
-  console.log('check Stream!!!!!', otherStream);
   return <Container playsInline autoPlay ref={ref} isSelect={props.isSelect} />;
 }
 

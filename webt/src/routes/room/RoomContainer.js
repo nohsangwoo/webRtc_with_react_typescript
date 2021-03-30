@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 import styled from 'styled-components';
-import OtherVideo from './components/OtherVideo';
 import LoadingAni from '../../components/LoadingAni';
 import Navbar from '../../components/nav/Navbar';
-import ChangeVideo from './components/ChangeVideo';
-import MyListMainVideo from './components/MyListMainVideo';
-
+import VideoListWrapper from './components/VideoListWrapper';
+import BottomMemu from '../../components/BottomMenu/BottomMemu';
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -18,33 +16,13 @@ const BackgrounVideoWrapper = styled.div`
   height: 100%;
 `;
 
-//91 67
-const OtherVideoWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  border: 1px solid red;
-  color: red;
-  cursor: pointer;
-`;
-
-const MyVideo = styled.video`
+const MainStreamingWrapper = styled.video`
   position: absolute;
   top: 0;
   right: 0;
   height: 100%;
   width: 100%;
   z-index: 1;
-`;
-
-const VideoListWrapper = styled.div`
-  position: absolute;
-  bottom: 30px;
-  right: 0;
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100px;
-  z-index: 10;
 `;
 
 const videoConstraints = {
@@ -63,7 +41,6 @@ const RoomContainer = props => {
   const [isDelete, setIsDelete] = useState(false);
   const [leftUserId, setLeftUserId] = useState();
   const [selectedUser, setSelectedUser] = useState(null);
-  const TestVideoRef = useRef(null);
   const [mainStream, setMainStream] = useState(null);
 
   useEffect(() => {
@@ -269,8 +246,6 @@ const RoomContainer = props => {
   // 나를 제외한 방에 입장한 모든 유저의 peer정보들이 담김
   console.log('peers 현황', peers);
 
-  console.log('선택한 사람', selectedUser);
-
   const selectUser = useCallback(
     (peer, index) => {
       setSelectedUser(index);
@@ -278,11 +253,11 @@ const RoomContainer = props => {
     },
     [selectedUser]
   );
-  const myVideoPlay = () => {
+  const myVideoPlay = useCallback(() => {
     console.log('is exist muyStream?L:', mainStream);
     userVideo.current.srcObject = mainStream;
     setSelectedUser(null);
-  };
+  }, [mainStream]);
   return (
     <Container>
       <Navbar />
@@ -290,32 +265,21 @@ const RoomContainer = props => {
         <LoadingAni />
       ) : (
         <BackgrounVideoWrapper>
-          <MyVideo muted ref={userVideo} autoPlay playsInline />
+          <MainStreamingWrapper muted ref={userVideo} autoPlay playsInline />
 
           {/* peer를 map돌려서 전달한다음 peer.on("steam",....)진행해줌 */}
-          <VideoListWrapper>
-            <OtherVideoWrapper onClick={() => myVideoPlay()}>
-              <MyListMainVideo mainStream={mainStream} />
-            </OtherVideoWrapper>
-            {peers.map((peer, index) => {
-              return (
-                <OtherVideoWrapper
-                  key={index}
-                  onClick={() => selectUser(peer, index)}
-                >
-                  <OtherVideo
-                    key={index}
-                    peer={peer}
-                    isSelect={index === selectedUser}
-                    userVideo={userVideo}
-                  />
-                  <div>{`${peersRef.current[index].peerID}`}</div>
-                </OtherVideoWrapper>
-              );
-            })}
-          </VideoListWrapper>
+          <VideoListWrapper
+            myVideoPlay={myVideoPlay}
+            mainStream={mainStream}
+            peers={peers}
+            selectUser={selectUser}
+            selectedUser={selectedUser}
+            userVideo={userVideo}
+            peersRef={peersRef}
+          />
         </BackgrounVideoWrapper>
       )}
+      <BottomMemu />
     </Container>
   );
 };

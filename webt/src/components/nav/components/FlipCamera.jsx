@@ -3,6 +3,9 @@ import FlipCameraIosIcon from '@material-ui/icons/FlipCameraIos';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  position: relative;
+  top: 0;
+  left: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
