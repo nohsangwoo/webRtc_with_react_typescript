@@ -9,6 +9,7 @@ const Container = styled.div`
   height: 2.5rem;
   background-color: rgba(208, 208, 208, 1);
   border-radius: 50%;
+  cursor: pointer;
 `;
 const RightMenu = () => {
   return (

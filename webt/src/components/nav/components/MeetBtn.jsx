@@ -11,6 +11,7 @@ const Container = styled.div`
   border-radius: 50%;
   color: #ffffff;
   font-size: 0.6rem;
+  cursor: pointer;
 `;
 const MeetBtn = () => {
   return <Container>MEET</Container>;
