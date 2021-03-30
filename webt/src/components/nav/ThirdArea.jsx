@@ -1,15 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
+import FlipCamera from './components/FlipCamera';
+import RightMenu from './components/RightMenu';
+
 const Container = styled.div`
-  width: 100%;
   height: 100%;
-  border: 1px solid black;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.5rem;
+  .FlipCamera {
+    margin-right: 1.6rem;
+  }
 `;
+
 const ThirdArea = () => {
-  return <Container>Third</Container>;
+  return (
+    <Container>
+      <div className="FlipCamera">
+        <FlipCamera />
+      </div>
+      <RightMenu />
+    </Container>
+  );
 };
 
 export default ThirdArea;

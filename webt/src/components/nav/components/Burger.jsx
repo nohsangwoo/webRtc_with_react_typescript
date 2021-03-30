@@ -5,20 +5,20 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 39px;
-  height: 39px;
-  background-color: rgba(208, 208, 208, 0.7);
-
-  /* border-radius: 50%; */
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: rgba(208, 208, 208, 1);
+  border-radius: 50%;
 `;
 const StyledBurger = styled.div`
   display: flex;
   justify-content: space-around;
   flex-flow: column nowrap;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 1.5rem;
+  height: 1.5rem;
   z-index: 20;
+  cursor: pointer;
   /* display: none; */
 
   @media (max-width: 768px) {
@@ -30,8 +30,9 @@ const StyledBurger = styled.div`
 
   div {
     width: 100%;
-    height: 0.25rem;
-    background-color: ${({ open }) => (open ? '#ccc' : '#333')};
+    height: 0.2rem;
+    /* background-color: ${({ open }) => (open ? '#ccc' : '#333')}; */
+    background-color: #ffffff;
     border-radius: 10px;
     transform-origin: 1px;
     transition: all 0.3s;
